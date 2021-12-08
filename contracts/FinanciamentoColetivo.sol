@@ -10,7 +10,7 @@ contract FabricaDeCampanhas{
     address[] public campanhas;
     address dataFeedEther;
 
-    constructor(address dataFeedEther) {
+    constructor(address _dataFeedEther) {
         dataFeedEther = _dataFeedEther;
     }
 
