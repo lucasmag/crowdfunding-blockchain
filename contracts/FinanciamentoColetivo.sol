@@ -42,13 +42,13 @@ contract FabricaDeCampanhas{
 
 contract Campanha {
 
-    AggregatorV3Interface public dataFeedEther;
-    uint public financiamentoMinimo;
+    AggregatorV3Interface private dataFeedEther;
+    uint private financiamentoMinimo;
     uint public dataLimite;
     address public beneficiario;
-    mapping(address => uint) public valorInvestidoPorCadaInvestidor;
-    address[] public financiadores;
-    string nomeCampanha;
+    mapping(address => uint) private valorInvestidoPorCadaInvestidor;
+    address[] private financiadores;
+    string public nomeCampanha;
     // Valor dolar considerado = 5,6 reais
     uint private valorDolar = 56 * 10**17;
     
@@ -67,7 +67,7 @@ contract Campanha {
     }
 
     modifier somentebeneficiario() {
-        require(msg.sender == beneficiario);
+        require(msg.sender == beneficiario, "Somente criador da campanha pode recolher investimentos.");
         _;
     }
 
@@ -86,7 +86,7 @@ contract Campanha {
         return address(this).balance;
     }
 
-    function buscarPrecoEth() public view returns (uint, uint) {
+    function buscarPrecoEth() private view returns (uint, uint) {
         // Buscando valor atual do Ether
         (, int256 precoEth, , , ) = dataFeedEther.latestRoundData();
         uint decimais = dataFeedEther.decimals();
@@ -94,7 +94,7 @@ contract Campanha {
         return (uint(precoEth), uint(decimais));
     }
 
-    function converterEthParaReal(uint256 quantidadeDeEth) public view returns (uint256) {
+    function converterEthParaReal(uint256 quantidadeDeEth) private view returns (uint256) {
         (uint256 precoEth, uint256 decimais) = buscarPrecoEth();
 
         uint256 quantidadeDeEthEmDolar = (precoEth * quantidadeDeEth) / 10**decimais;
